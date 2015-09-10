@@ -1,0 +1,6 @@
+torrent-replace-announce {-s SEARCH -r REPLACEMENT}
+
+  Read torrent files and loop over announce URL and replace SEARCH by REPLACEMENT
+
+  -s Search.
+  -r Replacement.
