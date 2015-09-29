@@ -1,5 +1,5 @@
 {
-  "name": "torrent-replace-annouce",
+  "name": "torrent-replace-announce",
   "version": "1.0.0",
   "description": "Replace string in announce of .torrent files",
   "main": "index.js",
@@ -16,6 +16,9 @@
   },
   "scripts": {
     "test": "tape test/*.js"
+  },
+  "bin": {
+    "torrent-replace-announce": "./bin/torrent-replace-announce"
   },
   "author": "",
   "license": "ISC"
