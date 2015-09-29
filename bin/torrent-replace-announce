@@ -3,20 +3,27 @@
 var path = require('path');
 var fs = require('fs');
 var glob = require('glob');
-var minimist = require('minimist');
 var mkdirp = require('mkdirp');
 var parseTorrent = require('parse-torrent');
 var torrentReplaceAnnounce = require('../lib/torrentReplaceAnnounce');
 
-var argv = minimist(process.argv.slice(2), {
-  alias: { search: 's', replacement: 'r', h: 'help',
-           output: 'o', dry: 'd'
-         },
-  string: ['s', 'r', 'p'],
-  boolean: ['d']
-});
+var argv = require('yargs')
+    .usage('Usage: $0 -s [search] -r [replacement]')
+    .demand(['s', 'r'])
+    .describe('h', 'Help')
+    .describe('s', 'Search expression')
+    .describe('r', 'Replacement')
+    .describe('o', 'Output directory')
+    .describe('d', 'Dry run')
+    .boolean('dry')
+    .describe('v', 'Verbose')
+    .boolean('v')
+    .help('help')
+    .alias('d', 'dry')
+    .alias('o', 'output')
+    .argv;
 
-if (argv.help || !argv.s || !argv.r) return usage(0);
+var verbose = argv.v ? console.log : function () {};
 
 if (!argv.dry && argv.output) {
   mkdirp.sync(argv.output);
@@ -38,6 +45,8 @@ argv._.forEach(function (file) {
     }
 
     console.log('File writed: %s', newFile);
+  } else {
+    verbose('File not matching: %s', file);
   }
 });
 
