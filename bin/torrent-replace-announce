@@ -4,29 +4,41 @@ var path = require('path');
 var fs = require('fs');
 var glob = require('glob');
 var minimist = require('minimist');
+var mkdirp = require('mkdirp');
 var parseTorrent = require('parse-torrent');
 var torrentReplaceAnnounce = require('../lib/torrentReplaceAnnounce');
 
 var argv = minimist(process.argv.slice(2), {
-  alias: { search: 's', replacement: 'r', h: 'help' },
-  string: ['search', 'replacement']
+  alias: { search: 's', replacement: 'r', h: 'help',
+           output: 'o', dry: 'd'
+         },
+  string: ['s', 'r', 'p'],
+  boolean: ['d']
 });
 
-if (argv.help) return usage(0);
+if (argv.help || !argv.s || !argv.r) return usage(0);
 
-if (!argv.s) {
-  console.error('Invalid search');
-  process.exit(1);
-} else if (!argv.r) {
-  console.error('Invalid replacement');
-  process.exit(1);
+if (!argv.dry && argv.output) {
+  mkdirp.sync(argv.output);
 }
 
 argv._.forEach(function (file) {
   var torrent = parseTorrent(fs.readFileSync(file));
   var changed = torrentReplaceAnnounce(torrent, argv.s, argv.r);
 
-  console.log(changed, torrent.announce);
+  if (changed) {
+    var newTorrent = parseTorrent.toTorrentFile(torrent);
+    var newFile = path.join(
+      (argv.output ? argv.output : path.dirname(file)),
+      path.basename(file)
+    );
+
+    if (!argv.dry) {
+      fs.writeFileSync(newFile, newTorrent);
+    }
+
+    console.log('File writed: %s', newFile);
+  }
 });
 
 function usage (code) {

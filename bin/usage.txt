@@ -4,3 +4,5 @@ torrent-replace-announce {-s SEARCH -r REPLACEMENT}
 
   -s Search.
   -r Replacement.
+  -o Output directory
+  -d Dry run
