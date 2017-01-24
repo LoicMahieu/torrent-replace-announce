@@ -1,5 +1,7 @@
 # torrent-replace-announce
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/LoicMahieu/torrent-replace-announce.svg)](https://greenkeeper.io/)
+
 Replace `announce` in torrent files
 
 ## Install
